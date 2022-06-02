@@ -1,7 +1,11 @@
 Django~=4.0.4
-django_rest_passwordreset
-djangorestframework~=3.13.1
-psycopg2-binary
 requests~=2.27.1
+djangorestframework~=3.13.1
 ujson~=5.2.0
 PyYAML~=6.0
+celery~=5.2.6
+django-allauth
+pytest-django
+baker
+model_bakery
+django_rest_passwordreset

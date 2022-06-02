@@ -8,6 +8,7 @@ from django.db import IntegrityError
 from django.db.models import Q, Sum, F
 from django.http import JsonResponse
 from requests import get
+from rest_framework import viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
@@ -462,11 +463,12 @@ class ContactView(APIView):
         return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})
 
 
-class OrderView(APIView):
+class OrderViewSet(viewsets.ModelViewSet):
     """
     Класс для получения и размешения заказов пользователями
     """
-
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
     # получить мои заказы
     def get(self, request, *args, **kwargs):
         if not request.user.is_authenticated:

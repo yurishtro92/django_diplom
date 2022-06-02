@@ -36,7 +36,25 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'django_rest_passwordreset',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.vk',
 ]
+
+SITE_ID = 1
+
+# Provider specific settings
+SOCIALACCOUNT_PROVIDERS = {
+    'vk': {
+        'APP': {
+            'client_id': '8170259',
+            'secret': 'uFbETMVhOvBJMrPbVF0e',
+            'key': ''
+        }
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -67,17 +85,17 @@ TEMPLATES = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
 WSGI_APPLICATION = 'netology_pd_diplom.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
-
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    # }
 
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -132,7 +150,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_HOST_USER = 'schtro.yuri@yandex.ru'
-EMAIL_HOST_PASSWORD = 'my_password'
+EMAIL_HOST_PASSWORD = 'As23!Xv43'
 EMAIL_PORT = '465'
 EMAIL_USE_SSL = True
 SERVER_EMAIL = EMAIL_HOST_USER
@@ -146,11 +164,27 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.BrowsableAPIRenderer',
 
     ),
-
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.UserRateThrottle',
+        'rest_framework.throttling.AnonRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'user': '20/minute',
+        'anon': '2/minute',
+    },
     'DEFAULT_AUTHENTICATION_CLASSES': (
         # 'rest_framework.authentication.SessionAuthentication',
         # 'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ),
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json'
 
 }
+
+
+REDIS_HOST = 'localhost'
+REDIS_PORT = '6379'
+BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
+CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+CELERY_STORE_ERRORS_EVEN_IF_IGNORED = True
